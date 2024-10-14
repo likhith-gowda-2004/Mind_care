@@ -5,13 +5,13 @@ import './App.css';
 import Navbar from './Components/Navbar'; // Import Navbar component
 import Home from './pages/Home';
 import Topics from './pages/Topics';
-import Faculties from './pages/Faculties';
+import Faculties from './pages/Faculties'; // Ensure Faculties is imported
 import Contact from './pages/Contact';
 import About from './pages/About';
-import Register from './Auth/Register';
+import Register from './Auth/Register'; // This could be the Create Account page
 import Login from './Auth/Login';
 import Dashboard from './pages/Dashboard';
-import MyProfile from './pages/MyProfile'; // Assuming you have these pages
+import MyProfile from './pages/MyProfile';
 import MyAppointments from './pages/MyAppointments';
 import { useAuth } from './contexts/AuthContext';
 
@@ -25,12 +25,12 @@ const App = () => {
         {/* Public Routes */}
         <Route path='/' element={<Home />} />
         <Route path='/topics' element={<Topics />} />
-        <Route path='/faculties' element={<Faculties />} />
+        <Route path='/faculties' element={<Faculties />} /> {/* Faculties route */}
         <Route path='/contact' element={<Contact />} />
         <Route path='/about' element={<About />} />
         
         {/* Auth Routes */}
-        <Route path='/register' element={!isAuthenticated ? <Register /> : <Navigate to='/' />} />
+        <Route path='/register' element={!isAuthenticated ? <Register /> : <Navigate to='/' />} /> {/* Create Account page */}
         <Route path='/login' element={!isAuthenticated ? <Login /> : <Navigate to='/' />} />
         
         {/* Protected Routes */}
