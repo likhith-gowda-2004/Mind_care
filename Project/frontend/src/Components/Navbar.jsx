@@ -3,7 +3,7 @@ import { Menu, Dropdown, Avatar, Button } from 'antd';
 import { UserOutlined, DownOutlined } from '@ant-design/icons';
 import { Link, useLocation,useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import logo from '../assets/logo_02.png';  // Ensure the logo is in the correct path
+import logo from '../assets/logo_04.jpg';  // Ensure the logo is in the correct path
 
 const Navbar = () => {
   const { isAuthenticated, userData, logout } = useAuth();
@@ -66,4 +66,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+ export default Navbar;
