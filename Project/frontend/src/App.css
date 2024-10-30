@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.active hr {
+  @apply block;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,14 +15,81 @@
   font-family: 'Poppins', sans-serif;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background: #f0f4ff; /* Slightly softer background for improved readability */
+  justify-content: flex-start; /* Align content at the start of the page */
+  min-height: 100vh; /* Allow body to fill the viewport */
+  background: #f0f4ff; /* Softer background for improved readability */
   padding: 20px; /* Add padding for small screen breathing room */
   overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #077c9c;
+  padding: 10px 20px;
+  position: fixed;
+  top: 0;
+  left:0;
+  width: 100%; /* Stretch to full width */
+  box-shadow: 0 4px 2px -2px gray;
+  z-index: 1000; /* Ensure navbar is above other elements */
+}
+
+.navbar-left, .navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  height: 40px;
+  margin-right: 20px; /* Slightly reduced for better spacing */
+}
+
+.navbar-left a, .navbar-right a {
+  color: white;
+  margin: 0 15px; /* Uniform margin for links */
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.3s ease; /* Add transition for hover effects */
+}
+
+/* Active link styling */
+.navbar-left a.active,
+.navbar-right a.active {
+  color: #87d068; /* Green color for the active link */
+}
+
+/* Keep green when hovering over an active link */
+.navbar-left a.active:hover,
+.navbar-right a.active:hover {
+  color: #87d068; /* Ensure it remains green when hovered */
+}
+
+.navbar-right button {
+  background: #87d068;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-right button:hover {
+  background-color: #66a153;
 }
 
 /* Form container */
@@ -25,16 +100,15 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 30px;
-  margin: 20px;
+  margin: 20px auto; /* Center container */
 }
 
-.title,
-.slogan {
+.title, .slogan {
   text-align: center;
   margin-bottom: 20px;
 }
 
-.btn {
+.btn, .profile-btn {
   width: 100%;
   border-radius: 8px;
   background: #4890d7;
@@ -45,7 +119,7 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.btn:hover {
+.btn:hover, .profile-btn:hover {
   background: #377bb0;
 }
 
@@ -70,6 +144,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  margin: 20px auto; /* Center container */
 }
 
 .avatar {
@@ -88,86 +163,6 @@ body {
   font-size: 18px;
   font-weight: 500;
   text-transform: capitalize;
-}
-
-.profile-btn {
-  margin-top: 1.3rem;
-  width: 100%;
-}
-
-/* Navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #077c9c;
-  padding: 10px 20px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%; /* Stretch to full width */
-  z-index: 100;
-  box-shadow: 0 4px 2px -2px gray;
-}
-
-.navbar-left {
-  display: flex;
-  align-items: center;
-}
-
-.navbar-logo {
-  height: 40px;
-  margin-right: 50px;
-}
-
-.navbar-left a {
-  color: white;
-  margin-right: 20px;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-/* Active link styling */
-.navbar-left a.active {
-  color: #87d068; /* Green color for the active link */
-}
-
-/* Keep green when hovering over an active link */
-.navbar-left a.active:hover {
-  color: #87d068; /* Ensure it remains green when hovered */
-}
-
-
-.navbar-right {
-  display: flex;
-  align-items: center;
-}
-
-.navbar-right a {
-  color: white;
-  margin-left: 15px;
-  text-decoration: none;
-  font-size: 16px;
-}
-
-.navbar-right button {
-  margin-left: 15px;
-  background: #87d068;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.navbar-right button:hover {
-  background-color: #66a153;
-}
-
-.avatar {
-  margin-left: 10px;
 }
 
 /* Responsive adjustments */

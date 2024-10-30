@@ -5,7 +5,9 @@ import { dbConnection } from "./database/dbConnection.js";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import authRouter from './router/authRoute.js';
-
+import topicRoute from './router/topicRoute.js';
+import adminRoutes from './router/adminRoutes.js';
+import bodyParser from 'body-parser';
 const app = express();
 
 // Load environment variables from the .env file
@@ -42,9 +44,12 @@ app.use(
         tempFileDir: "/tmp/",
     })
 );
+app.use(bodyParser.json());
 
 // Auth routes
 app.use("/api/v1/auth", authRouter);
+app.use("/api/topics", topicRoute);
+app.use("/api/admin", adminRoutes);
 
 // Connect to the database
 dbConnection();
