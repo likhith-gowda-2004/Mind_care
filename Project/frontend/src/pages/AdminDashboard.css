@@ -2,8 +2,6 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
     background-color: #f4f4f9;
 }
 
@@ -27,28 +25,37 @@ h2 {
     background-color: #fff;
 }
 
+.error-message {
+    color: red;
+    margin-bottom: 15px;
+}
+
+.admin-section {
+    margin-bottom: 30px;
+}
+
 .topic-list {
     list-style: none;
     padding: 0;
 }
 
-.topic-list li {
+.topic-item {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     padding: 10px;
-    margin: 10px 0;
     border-radius: 5px;
     background-color: #f9f9f9;
+    margin-bottom: 10px;
     transition: background-color 0.3s;
 }
 
-.topic-list li:hover {
+.topic-item:hover {
     background-color: #eaeaea;
 }
 
 input[type="text"],
-textarea {
+textarea,
+select {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -60,7 +67,7 @@ textarea {
 
 button {
     padding: 10px 15px;
-    background-color: #4CAF50; /* Green */
+    background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;

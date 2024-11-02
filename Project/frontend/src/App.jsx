@@ -20,11 +20,12 @@ const App = () => {
   const { isAuthenticated, isAdmin } = useAuth(); // Assuming you have isAdmin to check for admin user
 
   return (
-    <div className='mx-4 sm:mx-[10%]'>
+    <div className='min-h-screen bg-gray-100'>
       
       <Router>
        {/* Add the Navbar component here */}
        <Navbar />
+       <main className="mt-16 mx-4 sm:mx-[10%]">
         <Routes>
         
           {/* Public Routes */}
@@ -47,6 +48,7 @@ const App = () => {
           {/* Admin Route */}
           <Route path='/admin' element ={<AdminDashboard/>}/>
         </Routes>
+        </main>
       </Router>
     </div>
   );
