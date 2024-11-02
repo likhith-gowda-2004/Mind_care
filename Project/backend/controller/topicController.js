@@ -1,14 +1,13 @@
-// topicController.js
-
 import Topic from '../models/topicModel.js';
 import Video from '../models/videoModel.js';
 import Assessment from '../models/assessmentModel.js';
 import Blog from '../models/blogModel.js';
 import Faculty from '../models/facultyModel.js';
 
+// Get all topics
 export const getAllTopics = async (req, res) => {
     try {
-        const topics = await Topic.find();
+        const topics = await Topic.find().populate('assessments videos Blog faculty');
         return res.status(200).json({ success: true, topics });
     } catch (error) {
         console.error('Error fetching topics:', error);
@@ -16,124 +15,92 @@ export const getAllTopics = async (req, res) => {
     }
 };
 
+// Add content to an existing topic
 export const addContentToTopic = async (req, res) => {
     try {
         const { topicId, type, content } = req.body;
 
+        // Validate required fields
         if (!topicId || !type || !content) {
-            return res.status(400).json({
-                success: false,
-                message: "Topic ID, type, and content are required"
-            });
+            return res.status(400).json({ success: false, message: "Topic ID, type, and content are required" });
         }
 
-        // Determine content type and create the corresponding content object
+        // Check if topic exists
+        const topic = await Topic.findById(topicId);
+        if (!topic) {
+            return res.status(404).json({ success: false, message: "Topic not found" });
+        }
+
+        // Initialize new content based on type
         let newContent;
         switch (type) {
             case 'video':
                 newContent = new Video(content);
-                await newContent.save();
-                await Topic.findByIdAndUpdate(
-                    topicId,
-                    { $push: { videos: newContent._id } },
-                    { new: true }
-                );
+                topic.videos.push(newContent._id);
                 break;
             case 'assessment':
                 newContent = new Assessment(content);
-                await newContent.save();
-                await Topic.findByIdAndUpdate(
-                    topicId,
-                    { $push: { assessments: newContent._id } },
-                    { new: true }
-                );
+                topic.assessments.push(newContent._id);
                 break;
             case 'blog':
                 newContent = new Blog(content);
-                await newContent.save();
-                await Topic.findByIdAndUpdate(
-                    topicId,
-                    { Blog: newContent._id },
-                    { new: true }
-                );
+                topic.Blog = newContent._id;  // Single blog reference
                 break;
             case 'faculty':
                 newContent = new Faculty(content);
-                await newContent.save();
-                await Topic.findByIdAndUpdate(
-                    topicId,
-                    { $push: { faculty: newContent._id } },
-                    { new: true }
-                );
+                topic.faculty.push(newContent._id);
                 break;
             default:
-                return res.status(400).json({
-                    success: false,
-                    message: "Unsupported content type. Please provide a valid type."
-                });
+                return res.status(400).json({ success: false, message: "Unsupported content type. Valid types are: video, assessment, blog, faculty." });
         }
 
-        res.status(201).json({
-            success: true,
-            data: newContent,
-            message: "Content added successfully to the topic"
-        });
+        // Save new content and update the topic
+        await newContent.save();
+        await topic.save();
+
+        res.status(201).json({ success: true, data: newContent, message: "Content added successfully to the topic" });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "An error occurred while adding content to the topic",
-            error: error.message
-        });
+        console.error("Error adding content to topic:", error);
+        res.status(500).json({ success: false, message: "An error occurred while adding content to the topic", error: error.message });
     }
 };
 
+// Add a new topic
 export const addNewTopic = async (req, res) => {
     try {
-        const { title, content, description } = req.body; // Include description
+        const { title, description } = req.body;
 
         // Validate required fields
-        if (!title || !content || !description) {
-            return res.status(400).json({
-                success: false,
-                message: 'Title, content, and description are required.'
-            });
+        if (!title || !description) {
+            return res.status(400).json({ success: false, message: 'Title and description are required.' });
         }
 
-        // Create a new topic instance
-        const newTopic = new Topic({ title, content, description }); // Save description
-
-        // Save the new topic to the database
+        // Create and save a new topic
+        const newTopic = new Topic({ title, description });
         await newTopic.save();
 
-        res.status(201).json({
-            success: true,
-            message: 'Topic added successfully.',
-            topic: newTopic
-        });
+        res.status(201).json({ success: true, message: 'Topic added successfully.', topic: newTopic });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error adding topic.',
-            error: error.message
-        });
+        console.error("Error adding new topic:", error);
+        res.status(500).json({ success: false, message: 'Error adding topic.', error: error.message });
     }
 };
 
-
+// Delete a topic by ID
 export const deleteTopic = async (req, res) => {
     try {
-        const topicId = req.params.id;
+        const { id: topicId } = req.params;
 
-        // Check if the topic exists before attempting to delete
+        // Check if the topic exists
         const topic = await Topic.findById(topicId);
         if (!topic) {
             return res.status(404).json({ success: false, message: 'Topic not found.' });
         }
 
         await Topic.findByIdAndDelete(topicId);
-        return res.status(200).json({ success: true, message: 'Topic deleted successfully.' });
+        res.status(200).json({ success: true, message: 'Topic deleted successfully.' });
     } catch (error) {
-        console.error('Error deleting topic:', error);
-        return res.status(500).json({ success: false, message: 'Error deleting topic.', error: error.message });
+        console.error("Error deleting topic:", error);
+        res.status(500).json({ success: false, message: 'Error deleting topic.', error: error.message });
     }
 };

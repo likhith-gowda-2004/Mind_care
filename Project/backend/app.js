@@ -4,8 +4,8 @@ import cors from "cors";
 import { dbConnection } from "./database/dbConnection.js";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
+import topicRoutes from "./router/topicRoute.js";
 import authRouter from './router/authRoute.js';
-import topicRoute from './router/topicRoute.js';
 import adminRoutes from './router/adminRoutes.js';
 import bodyParser from 'body-parser';
 const app = express();
@@ -48,7 +48,7 @@ app.use(bodyParser.json());
 
 // Auth routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/topics", topicRoute);
+app.use("/api/topics", topicRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Connect to the database
