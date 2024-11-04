@@ -190,3 +190,21 @@ body {
     padding: 10px;
   }
 }
+
+/* Footer specific styles */
+footer {
+  margin-top: auto;
+  width: 100%;
+}
+
+/* Ensure the page content pushes footer to bottom */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+  color: #e0e0e0;
+}
