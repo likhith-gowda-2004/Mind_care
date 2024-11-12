@@ -2,6 +2,7 @@ import express from 'express';
 import {
     getAllTopics,
     addNewTopic,
+    getTopicById,
     addContentToTopic,
     deleteTopic
 } from '../controller/topicController.js';
@@ -25,6 +26,16 @@ router.get('/topics', async (req, res) => {
         res.status(500).json({ message: "Internal Server Error while fetching topics" });
     }
 });
+//get specific topic
+router.get('/topics/:id', async (req, res) => {
+    try {
+        await getTopicById(req, res);
+    } catch (error) {
+        console.error(`Error fetching topic with ID ${req.params.id}:`, error);
+        res.status(500).json({ message: "Internal Server Error while fetching topic" });
+    }
+});
+
 
 // Add a new topic
 router.post('/add-topic', async (req, res) => {
@@ -57,3 +68,5 @@ router.delete('/delete-topic/:id', async (req, res) => {
 });
 
 export default router;
+
+
