@@ -5,7 +5,6 @@ import Navbar from './Components/Navbar';
 import Footer from './Components/Footer';
 import Home from './pages/Home';
 import Topics from './pages/Topics';
-import TopicDetails from './pages/TopicDetails';
 import Faculties from './pages/Faculties';
 import Contact from './pages/Contact';
 import About from './pages/About';
@@ -16,6 +15,8 @@ import MyProfile from './pages/MyProfile';
 import MyAppointments from './pages/MyAppointments';
 import AdminDashboard from './pages/AdminDashboard';
 import { useAuth } from './contexts/AuthContext';
+import Appointment from './pages/Appointment';
+import TopicDetailsPage from './pages/TopicDetails';
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -32,10 +33,11 @@ const App = () => {
             {/* Public Routes */}
             <Route path='/' element={<Home />} />
             <Route path='/topics' element={<Topics />} />
-            <Route path='/topics/:title' element={<TopicDetails />} />
+            <Route path='/topics/:id' element={<TopicDetailsPage />} />
             <Route path='/faculties' element={<Faculties />} />
             <Route path='/contact' element={<Contact />} />
             <Route path='/about' element={<About />} />
+            <Route path='/appointment' element={<Appointment />} />
 
             {/* Auth Routes */}
             <Route 
@@ -66,6 +68,7 @@ const App = () => {
 
             {/* Default redirect for unknown routes */}
             <Route path="*" element={<Navigate to="/" replace />} />
+            
           </Routes>
         </main>
 
