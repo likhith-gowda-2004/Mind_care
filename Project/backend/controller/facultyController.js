@@ -30,6 +30,23 @@ export const getAllFaculties = async (req, res) => {
   }
 };
 
+// fetch only by id 
+
+export const getFacultyById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const faculty = await Faculty.findById(id).populate('topicId');
+    if (!faculty) {
+      return res.status(404).json({ message: 'Faculty not found' });
+    }
+    res.json(faculty);
+  } catch (error) {
+    console.error('Error fetching faculty by ID:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+
 // Controller to create a new faculty
 export const createFaculty = async (req, res) => {
   const { name, specialization, contactInfo, topicId, availableSlots } = req.body;

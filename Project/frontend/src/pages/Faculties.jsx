@@ -216,7 +216,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link  } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.jsx'; // Import useAuth hook to access the AuthContext
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -239,14 +239,15 @@ const Faculties = () => {
       });
   }, []);
 
-  const handleBookAppointment = () => {
-    if (!isAuthenticated) {  // Use isAuthenticated from context
+  const handleBookAppointment = (facultyId) => {
+    if (!isAuthenticated) {
       alert("You need to log in first before booking an appointment.");
-      navigate("/login"); // Redirect to login page if not authenticated
+      navigate("/login");
     } else {
-      navigate("/appointments"); // Redirect to appointments page if logged in
+      navigate('/appointments');
     }
   };
+
 
   if (loading) {
     return <p>Loading...</p>;
@@ -272,7 +273,10 @@ const Faculties = () => {
               <Card.Text>Contact: {faculty.contactInfo}</Card.Text>
               <Card.Text>Available: {faculty.available ? 'Yes' : 'No'}</Card.Text>
               {/* Book Appointment Button */}
-              <Button variant="primary" onClick={handleBookAppointment}>Book Appointment</Button>
+              <Link to={`/appointment/${faculty._id}`}>
+                 <Button variant="primary" onClick={handleBookAppointment}>Book Appointment</Button>
+               </Link>             
+              
             </Card.Body>
           </Card>
         ))}

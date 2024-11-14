@@ -37,7 +37,7 @@ const App = () => {
             <Route path='/faculties' element={<Faculties />} />
             <Route path='/contact' element={<Contact />} />
             <Route path='/about' element={<About />} />
-            <Route path='/appointment' element={<Appointment />} />
+            <Route path='/appointment/:facultyId' element={<Appointment />} />
 
             {/* Auth Routes */}
             <Route 
@@ -59,9 +59,9 @@ const App = () => {
               element={isAuthenticated ? <MyProfile /> : <Navigate to='/login' />}
             />
             <Route 
-              path='/appointments' 
-              element={isAuthenticated ? <MyAppointments /> : <Navigate to='/login' />}
-            />
+  path='/appointments/:facultyId' 
+  element={isAuthenticated ? <MyAppointments /> : <Navigate to='/login' />}
+/>
 
             {/* Admin Route */}
             <Route path='/admin' element={<AdminDashboard />} />
