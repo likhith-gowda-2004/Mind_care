@@ -9,7 +9,7 @@
 // export default router;
 
 import express from 'express';
-import { getAllFaculties, createFaculty, updateFaculty, deleteFaculty } from '../controller/facultyController.js';
+import { getAllFaculties, createFaculty, updateFaculty, deleteFaculty ,getFacultyById} from '../controller/facultyController.js';
 
 const router = express.Router();
 
@@ -18,5 +18,8 @@ router.get('/', getAllFaculties);
 router.post('/', createFaculty);
 router.put('/:id', updateFaculty);
 router.delete('/:id', deleteFaculty);
+// Route to fetch a faculty by ID
+router.get('/:id', getFacultyById);
+
 
 export default router;

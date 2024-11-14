@@ -413,16 +413,17 @@
 // export default TopicDetailsPage;
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams, Link } from "react-router-dom";
-import { Card, Row, Col, Spinner, Button } from 'react-bootstrap'; // Import Button from react-bootstrap
+import { useParams, Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Card, Row, Col, Spinner, Button } from 'react-bootstrap';
 
-const apiUrl = 'http://localhost:5000'; // Replace with your actual API base URL
+const apiUrl = 'http://localhost:5000';
 
 const TopicDetailsPage = () => {
-    const { id } = useParams(); // Access the 'id' param from the URL
+    const { id } = useParams();
     const [topic, setTopic] = useState(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate(); // Use navigate for redirection
 
     useEffect(() => {
         if (id) {
@@ -434,20 +435,24 @@ const TopicDetailsPage = () => {
     }, [id]);
 
     const fetchTopicById = async (topicId) => {
-        setError(""); // Reset error message
-        setLoading(true); // Start loading
+        setError("");
+        setLoading(true);
         try {
             const response = await axios.get(`${apiUrl}/api/admin/topics/${topicId}`);
             if (response.data?.success && response.data?.topic) {
-                setTopic(response.data.topic); // Set topic data on success
+                setTopic(response.data.topic);
             } else {
                 setError("Topic not found or invalid response.");
             }
         } catch (err) {
             setError("Error fetching topic details. Please try again.");
         } finally {
-            setLoading(false); // End loading
+            setLoading(false);
         }
+    };
+
+    const handleBookAppointment = () => {
+        navigate("/appointments"); // Redirect to the appointments page directly
     };
 
     if (loading) {
@@ -560,12 +565,8 @@ const TopicDetailsPage = () => {
                                         <a href={`mailto:${faculty.email}`} className="text-primary">
                                             Contact
                                         </a>
-
-                                        {/* Book Appointment Button */}
                                         <Link to={`/appointment/${faculty._id}`}>
-                                            <Button variant="primary" className="mt-3">
-                                                Book Appointment
-                                            </Button>
+                                            <Button variant="primary" onClick={handleBookAppointment}>Book Appointment</Button>
                                         </Link>
                                     </Card.Body>
                                 </Card>
