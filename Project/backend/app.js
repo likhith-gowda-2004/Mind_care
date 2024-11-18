@@ -69,6 +69,8 @@ import authRouter from './router/authRoute.js';
 import adminRoutes from './router/adminRoutes.js';
 import facultyRoute from './router/facultyRoute.js';
 import bodyParser from 'body-parser';
+import enrollmentRoutes from './router/enrollmentRoutes.js';
+import appointmentRoutes from './router/appointmentRoutes.js';
 
 
 const app = express();
@@ -97,10 +99,10 @@ app.use(bodyParser.json());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/topics', topicRoutes);
 app.use('/api/admin', adminRoutes);
-
+app.use('/api/enrollments', enrollmentRoutes);
 // Faculty route
 app.use('/api/faculties', facultyRoute); 
-
+app.use('/api/appointment', appointmentRoutes);
 // Global error handler
 app.use((err, req, res, next) => {
     console.error(err); // Debugging log

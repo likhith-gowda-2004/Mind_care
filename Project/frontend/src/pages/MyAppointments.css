@@ -1,0 +1,29 @@
+.appointment-card {
+    transition: transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .appointment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  
+  .status-pending {
+    color: #ffc107;
+    font-weight: 600;
+  }
+  
+  .status-confirmed {
+    color: #28a745;
+    font-weight: 600;
+  }
+  
+  .status-completed {
+    color: #17a2b8;
+    font-weight: 600;
+  }
+  
+  .status-cancelled {
+    color: #dc3545;
+    font-weight: 600;
+  }
