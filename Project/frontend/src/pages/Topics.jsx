@@ -371,31 +371,369 @@
 // };
 
 // export default Topics;
+// import React, { useEffect, useState } from 'react';
+// import axios from 'axios';
+// import { Card, Button, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
+// import { useNavigate } from 'react-router-dom';
+// import { useAuth } from '../contexts/AuthContext'; // Import useAuth to check authentication status
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'tailwindcss/tailwind.css';
+
+// const Topics = () => {
+//   const [topics, setTopics] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const navigate = useNavigate();
+//   const { isAuthenticated } = useAuth(); // Get isAuthenticated from AuthContext
+
+//   const apiUrl = 'http://localhost:5000';
+//   const pixabayApiKey = '46972113-0b6cd7ffe1f434004fbdfa862';
+
+//   const fetchTopics = async () => {
+//     setLoading(true);
+//     setError('');
+//     try {
+//       const response = await axios.get(`${apiUrl}/api/admin/topics`);
+//       const fetchedTopics = response.data.topics || [];
+
+//       const topicsWithImages = await Promise.all(
+//         fetchedTopics.map(async (topic) => {
+//           try {
+//             const imageResponse = await axios.get(
+//               `https://pixabay.com/api/?key=${pixabayApiKey}&q=${encodeURIComponent(topic.title)}&image_type=photo&category=people&orientation=horizontal&per_page=3`
+//             );
+//             const imageUrl = imageResponse.data.hits[0]?.webformatURL || 'https://via.placeholder.com/600x400?text=Mental+Health';
+//             return { ...topic, imageUrl };
+//           } catch {
+//             return { ...topic, imageUrl: 'https://via.placeholder.com/600x400?text=Mental+Health' };
+//           }
+//         })
+//       );
+
+//       setTopics(topicsWithImages);
+//     } catch (error) {
+//       setError("Failed to load topics. Please try again.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchTopics();
+//   }, []);
+
+//   const handleLearnMore = (topic) => {
+//     if (!isAuthenticated) {  // Check if the user is authenticated
+//       alert("You need to log in first to learn more about the topic.");
+//       navigate("/login"); // Redirect to login page if not authenticated
+//     } else {
+//       navigate(`/topics/${topic._id}`); // Redirect to the topic details page if authenticated
+//     }
+//   };
+
+//   return (
+//     <Container
+//       fluid
+//       style={{
+//         minHeight: '100vh',
+//         padding: '50px',
+//         backgroundColor: '#f9f9f9',
+//         borderRadius: '8px',
+//         display: 'flex',
+//         flexDirection: 'column',
+//         justifyContent: 'center',
+//       }}
+//     >
+//       <h1 className="text-4xl font-bold text-center mb-6">Explore Mental Health Topics</h1>
+//       <p className="text-center text-lg mb-10">
+//         Dive into resources that can help you manage your mental well-being. Click on any topic to learn more.
+//       </p>
+
+//       {loading ? (
+//         <div className="flex justify-center">
+//           <Spinner animation="border" variant="primary" />
+//         </div>
+//       ) : error ? (
+//         <Alert variant="danger" className="text-center">
+//           {error}
+//         </Alert>
+//       ) : !topics.length ? (
+//         <p className="text-center">No topics available.</p>
+//       ) : (
+//         <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+//           {topics.map((topic) => (
+//             <Col key={topic._id}>
+//               <Card
+//                 className="shadow-lg rounded-lg h-full"
+//                 style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', height: '100%' }}
+//               >
+//                 <Card.Img
+//                   variant="top"
+//                   src={topic.imageUrl}
+//                   alt={topic.title}
+//                   style={{ height: '200px', objectFit: 'cover' }}
+//                 />
+//                 <Card.Body style={{ minHeight: '120px', display: 'flex', flexDirection: 'column' }}>
+//                   <Card.Title className="text-lg font-semibold text-gray-800 mb-2">
+//                     {topic.title}
+//                   </Card.Title>
+//                   <Card.Text className="text-gray-600 text-base flex-grow-1">
+//                     {topic.description}
+//                   </Card.Text>
+//                 </Card.Body>
+//                 <div className="flex justify-center pb-4">
+//                   <Button
+//                     onClick={() => handleLearnMore(topic)} // Trigger handleLearnMore when clicked
+//                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+//                     style={{ margin: '10px' }}
+//                   >
+//                     Learn More
+//                   </Button>
+//                 </div>
+//               </Card>
+//             </Col>
+//           ))}
+//         </Row>
+//       )}
+//     </Container>
+//   );
+// };
+
+// export default Topics;
+
+// import React, { useEffect, useState } from 'react';
+// import axios from 'axios';
+// import { Card, Button, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
+// import { useNavigate } from 'react-router-dom';
+// import { useAuth } from '../contexts/AuthContext';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'tailwindcss/tailwind.css';
+
+// // API Constants
+// const apiUrl = 'http://localhost:5000';
+// const pixabayApiKey = '46972113-0b6cd7ffe1f434004fbdfa862';
+// const defaultImageUrl = 'https://via.placeholder.com/600x400?text=Mental+Health';
+
+// const Topics = () => {
+//   const [topics, setTopics] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const [enrolling, setEnrolling] = useState(false);
+//   const navigate = useNavigate();
+//   const { isAuthenticated, userData } = useAuth();
+//   // const [enrolledTopics, setEnrolledTopics] = useState([]);
+
+//   const fetchTopics = async () => {
+//     setLoading(true);
+//     setError(null);
+//     try {
+//       const { data } = await axios.get(`${apiUrl}/api/admin/topics`);
+//       const fetchedTopics = data.topics || [];
+
+//       const topicsWithImages = await Promise.all(
+//         fetchedTopics.map(async (topic) => {
+//           try {
+//             const imageResponse = await axios.get(
+//               `https://pixabay.com/api/?key=${pixabayApiKey}&q=${encodeURIComponent(topic.title)}&image_type=photo&category=people&orientation=horizontal&per_page=3`
+//             );
+//             const imageUrl = imageResponse.data.hits[0]?.webformatURL || defaultImageUrl;
+//             return { ...topic, imageUrl };
+//           } catch {
+//             return { ...topic, imageUrl: defaultImageUrl };
+//           }
+//         })
+//       );
+
+//       setTopics(topicsWithImages);
+//     } catch (error) {
+//       setError("Failed to load topics. Please try again.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchTopics();
+//   }, []);
+
+  // const handleEnroll = async (topic) => {
+  //   if (!isAuthenticated) {
+  //     alert("You need to log in first to enroll in a topic.");
+  //     navigate("/login");
+  //     return;
+  //   }
+
+  //   setEnrolling(true);
+  //   try {
+  //     const response = await axios.post(`${apiUrl}/api/enrollments/enroll`, {
+  //       userId: userData._id,
+  //       topicId: topic._id
+  //     });
+
+  //     if (response.data.success) {
+  //       alert("Successfully enrolled in the topic!");
+  //       navigate(`/topics/${topic._id}`);
+  //     }
+  //   } catch (error) {
+  //     const errorMessage = error.response?.data?.message || "Error enrolling in topic. Please try again.";
+  //     alert(errorMessage);
+  //     console.error('Enrollment error:', error);
+  //   } finally {
+  //     setEnrolling(false);
+  //   }
+  // };
+
+  // const handleEnroll = async (topic) => {
+  //   if (!isAuthenticated) {
+  //     alert("You need to log in first to enroll in a topic.");
+  //     navigate("/login");
+  //     return;
+  //   }
+  
+  //   setEnrolling(true); // To indicate loading state (if required in the UI)
+  //   try {
+  //     const response = await axios.post(`${apiUrl}/api/enrollments/enroll`, {
+  //       userId: userData._id,
+  //       topicId: topic._id,
+  //     });
+  
+  //     if (response.data.success) {
+  //       alert("Successfully enrolled in the topic!");
+  //       navigate(`/topics/${topic._id}`);
+  //     }
+  //   } catch (error) {
+  //     if (error.response?.status === 400) {
+  //       // Handle case where the user is already enrolled
+  //       alert("You are already enrolled in this topic. Redirecting to the topic...");
+  //       navigate(`/topics/${topic._id}`);
+  //     } else {
+  //       // General error handling
+  //       const errorMessage =
+  //         error.response?.data?.message || "Error enrolling in topic. Please try again.";
+  //       alert(errorMessage);
+  //     }
+  //     console.error("Enrollment error:", error);
+  //   } finally {
+  //     setEnrolling(false); // Reset loading state
+  //   }
+  // };
+
+  // const handleUnenroll = async (topic) => {
+  //   if (!isAuthenticated) {
+  //     alert('You need to log in first to unenroll from a topic.');
+  //     navigate('/login');
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await axios.post(`${apiUrl}/api/enrollments/unenroll`, {
+  //       userId: userData._id,
+  //       topicId: topic._id,
+  //     });
+
+  //     if (response.data.success) {
+  //       alert('Successfully unenrolled from the topic!');
+  //       setEnrolledTopics((prev) => prev.filter((id) => id !== topic._id));
+  //     }
+  //   } catch (error) {
+  //     alert('Error unenrolling from topic. Please try again.');
+  //     console.error('Unenrollment error:', error);
+  //   }
+  // };
+  
+
+//   return (
+//     <Container fluid className="min-h-screen p-12 bg-gray-50">
+//       <h1 className="text-4xl font-bold text-center mb-6">Explore Mental Health Topics</h1>
+//       <p className="text-center text-lg mb-10">
+//         Dive into resources that can help you manage your mental well-being. Enroll in topics to access detailed content.
+//       </p>
+
+//       {loading ? (
+//         <div className="flex justify-center">
+//           <Spinner animation="border" variant="primary" />
+//         </div>
+//       ) : error ? (
+//         <Alert variant="danger" className="text-center">
+//           {error}
+//         </Alert>
+//       ) : !topics.length ? (
+//         <p className="text-center">No topics available.</p>
+//       ) : (
+//         <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+//           {topics.map((topic) => (
+//             <Col key={topic._id}>
+//               <Card className="shadow-lg rounded-lg h-full hover:shadow-xl transition-shadow duration-300">
+//                 <Card.Img
+//                   variant="top"
+//                   src={topic.imageUrl}
+//                   alt={topic.title}
+//                   style={{ height: '200px', objectFit: 'cover' }}
+//                 />
+//                 <Card.Body className="flex flex-col">
+//                   <Card.Title className="text-xl font-semibold mb-2">
+//                     {topic.title}
+//                   </Card.Title>
+//                   <Card.Text className="text-gray-600 flex-grow">
+//                     {topic.description}
+//                   </Card.Text>
+//                   <Button
+//                     onClick={() => handleEnroll(topic)}
+//                     disabled={enrolling}
+//                     className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition-colors duration-200"
+//                   >
+//                     {enrolling ? 'Enrolling...' : 'Enroll Now'}
+//                   </Button>
+//                 </Card.Body>
+//               </Card>
+//             </Col>
+//           ))}
+//         </Row>
+//       )}
+//     </Container>
+//   );
+// };
+
+// export default Topics;
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, Button, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext'; // Import useAuth to check authentication status
+import { useAuth } from '../contexts/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
 
 const Topics = () => {
   const [topics, setTopics] = useState([]);
+  const [enrolledTopics, setEnrolledTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [enrolling, setEnrolling] = useState(false);
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth(); // Get isAuthenticated from AuthContext
+  const { isAuthenticated, userData } = useAuth();
 
   const apiUrl = 'http://localhost:5000';
   const pixabayApiKey = '46972113-0b6cd7ffe1f434004fbdfa862';
 
+  // Fetch topics and check enrollment status
   const fetchTopics = async () => {
     setLoading(true);
-    setError('');
+    setError(null);
     try {
-      const response = await axios.get(`${apiUrl}/api/admin/topics`);
-      const fetchedTopics = response.data.topics || [];
+      // Fetch all topics
+      const { data } = await axios.get(`${apiUrl}/api/admin/topics`);
+      const fetchedTopics = data.topics || [];
 
+      // Fetch enrolled topics if user is authenticated
+      let enrolledTopicIds = [];
+      if (isAuthenticated && userData?._id) {
+        const enrollmentResponse = await axios.get(`${apiUrl}/api/enrollments/user/${userData._id}`);
+        enrolledTopicIds = enrollmentResponse.data.enrollments.map((e) => e.topic._id);
+      }
+      setEnrolledTopics(enrolledTopicIds);
+
+      // Add images to topics
       const topicsWithImages = await Promise.all(
         fetchedTopics.map(async (topic) => {
           try {
@@ -412,7 +750,8 @@ const Topics = () => {
 
       setTopics(topicsWithImages);
     } catch (error) {
-      setError("Failed to load topics. Please try again.");
+      setError('Failed to load topics. Please try again.');
+      console.error('Error fetching topics:', error);
     } finally {
       setLoading(false);
     }
@@ -420,33 +759,62 @@ const Topics = () => {
 
   useEffect(() => {
     fetchTopics();
-  }, []);
+  }, [isAuthenticated, userData]);
 
-  const handleLearnMore = (topic) => {
-    if (!isAuthenticated) {  // Check if the user is authenticated
-      alert("You need to log in first to learn more about the topic.");
-      navigate("/login"); // Redirect to login page if not authenticated
-    } else {
-      navigate(`/topics/${topic._id}`); // Redirect to the topic details page if authenticated
+  const handleEnroll = async (topic) => {
+    if (!isAuthenticated) {
+      alert('You need to log in first to enroll in a topic.');
+      navigate('/login');
+      return;
+    }
+
+    setEnrolling(true);
+    try {
+      const response = await axios.post(`${apiUrl}/api/enrollments/enroll`, {
+        userId: userData._id,
+        topicId: topic._id,
+      });
+
+      if (response.data.success) {
+        alert('Successfully enrolled in the topic!');
+        setEnrolledTopics((prev) => [...prev, topic._id]);
+      }
+    } catch (error) {
+      alert('Error enrolling in topic. Please try again.');
+      console.error('Enrollment error:', error);
+    } finally {
+      setEnrolling(false);
     }
   };
 
+  const handleUnenroll = async (topic) => {
+    if (window.confirm('Are you sure you want to unenroll from this topic?')) {
+      try {
+        const response = await axios.post(`${apiUrl}/api/enrollments/unenroll`, {
+          userId: userData._id,
+          topicId: topic._id,
+        });
+
+        if (response.data.success) {
+          alert('Successfully unenrolled from the topic');
+          setEnrolledTopics((prev) => prev.filter((id) => id !== topic._id));
+        }
+      } catch (error) {
+        alert('Error unenrolling from topic. Please try again.');
+        console.error('Unenrollment error:', error);
+      }
+    }
+  };
+
+  const handleView = (topicId) => {
+    navigate(`/topics/${topicId}`);
+  };
+
   return (
-    <Container
-      fluid
-      style={{
-        minHeight: '100vh',
-        padding: '50px',
-        backgroundColor: '#f9f9f9',
-        borderRadius: '8px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }}
-    >
+    <Container fluid className="min-h-screen p-12 bg-gray-50">
       <h1 className="text-4xl font-bold text-center mb-6">Explore Mental Health Topics</h1>
       <p className="text-center text-lg mb-10">
-        Dive into resources that can help you manage your mental well-being. Click on any topic to learn more.
+        Dive into resources that can help you manage your mental well-being. Enroll in topics to access detailed content.
       </p>
 
       {loading ? (
@@ -463,33 +831,48 @@ const Topics = () => {
         <Row xs={1} sm={2} md={3} lg={4} className="g-4">
           {topics.map((topic) => (
             <Col key={topic._id}>
-              <Card
-                className="shadow-lg rounded-lg h-full"
-                style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', height: '100%' }}
-              >
+              <Card className="shadow-lg rounded-lg h-full hover:shadow-xl transition-shadow duration-300">
                 <Card.Img
                   variant="top"
                   src={topic.imageUrl}
                   alt={topic.title}
                   style={{ height: '200px', objectFit: 'cover' }}
                 />
-                <Card.Body style={{ minHeight: '120px', display: 'flex', flexDirection: 'column' }}>
-                  <Card.Title className="text-lg font-semibold text-gray-800 mb-2">
+                <Card.Body className="flex flex-col">
+                  <Card.Title className="text-xl font-semibold mb-2">
                     {topic.title}
                   </Card.Title>
-                  <Card.Text className="text-gray-600 text-base flex-grow-1">
+                  <Card.Text className="text-gray-600 flex-grow">
                     {topic.description}
                   </Card.Text>
+                  {enrolledTopics.includes(topic._id) ? (
+                    <div className="flex gap-2 mt-4">
+                      <Button
+                        onClick={() => handleView(topic._id)}
+                        variant="success"
+                        className="flex-1"
+                      >
+                        View
+                      </Button>
+                      <Button
+                        onClick={() => handleUnenroll(topic)}
+                        variant="danger"
+                        className="flex-1"
+                      >
+                        Unenroll
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={() => handleEnroll(topic)}
+                      disabled={enrolling}
+                      variant="primary"
+                      className="w-full mt-4"
+                    >
+                      {enrolling ? 'Enrolling...' : 'Enroll Now'}
+                    </Button>
+                  )}
                 </Card.Body>
-                <div className="flex justify-center pb-4">
-                  <Button
-                    onClick={() => handleLearnMore(topic)} // Trigger handleLearnMore when clicked
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
-                    style={{ margin: '10px' }}
-                  >
-                    Learn More
-                  </Button>
-                </div>
               </Card>
             </Col>
           ))}
