@@ -28,10 +28,12 @@ A web-based platform that provides mental health resources and support .
 - JWT Authentication
 - RESTful APIs
 
-## Getting Started
 
 ### Prerequisites
 - Node.js (v14 or higher)
 - MongoDB
 - npm/yarn
+
+  
+
 
