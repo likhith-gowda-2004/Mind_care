@@ -80,7 +80,9 @@ config({ path: './config/config.env' });
 
 // CORS Middleware to connect the frontend
 app.use(cors({
-    origin: 'http://127.0.0.1:5173', 
+    origin: process.env.NODE_ENV === 'production' 
+        ? ['http://127.0.0.1:5173', 'http://localhost:5173']
+        : '*',
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));
